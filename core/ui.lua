@@ -1,136 +1,102 @@
 local UI = {}
 local player = game:GetService("Players").LocalPlayer
-local userInputService = game:GetService("UserInputService")
 
--- Cores do Tema Verde Forte
+-- Configuração de Cores (Verde Matrix)
 local theme = {
-    bg = Color3.fromRGB(10, 15, 10),
-    side = Color3.fromRGB(5, 10, 5),
-    accent = Color3.fromRGB(0, 200, 0), -- Verde Forte
+    main_bg = Color3.fromRGB(8, 12, 8),
+    side_bg = Color3.fromRGB(5, 8, 5),
+    accent = Color3.fromRGB(0, 255, 70), -- Verde Forte
     text = Color3.fromRGB(200, 255, 200),
-    darkText = Color3.fromRGB(0, 100, 0)
+    dark_green = Color3.fromRGB(0, 50, 0)
 }
 
 function UI:CreateMainGui(title)
-    local screenGui = Instance.new("ScreenGui")
-    screenGui.Name = "MALIGNANT_V2"
-    screenGui.Parent = player:WaitForChild("PlayerGui")
-    screenGui.ResetOnSpawn = false
-    screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+    local sg = Instance.new("ScreenGui", player:WaitForChild("PlayerGui"))
+    sg.Name = "Malignant_Green"
+    sg.ResetOnSpawn = false
 
-    local mainFrame = Instance.new("Frame")
-    mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 800, 0, 450)
-    mainFrame.Position = UDim2.new(0.5, -400, 0.5, -225)
-    mainFrame.BackgroundColor3 = theme.bg
-    mainFrame.BorderSizePixel = 0
-    mainFrame.Active = true
-    mainFrame.Draggable = true -- Nota: Draggable é legado, mas funciona para testes rápidos
-    mainFrame.Parent = screenGui
+    local main = Instance.new("Frame", sg)
+    main.Name = "Main"
+    main.Size = UDim2.new(0, 820, 0, 460)
+    main.Position = UDim2.new(0.5, -410, 0.5, -230)
+    main.BackgroundColor3 = theme.main_bg
+    main.BorderSizePixel = 0
+    main.Active = true
+    main.Draggable = true -- Para facilitar o movimento
 
-    -- Borda Neon Verde
-    local border = Instance.new("Frame")
-    border.Size = UDim2.new(1, 2, 1, 2)
-    border.Position = UDim2.new(0, -1, 0, -1)
-    border.BackgroundColor3 = theme.accent
-    border.BorderSizePixel = 0
-    border.ZIndex = 0
-    border.Parent = mainFrame
+    -- Linha de brilho no topo
+    local line = Instance.new("Frame", main)
+    line.Size = UDim2.new(1, 0, 0, 2)
+    line.BackgroundColor3 = theme.accent
+    line.BorderSizePixel = 0
 
     -- Menu Lateral
-    local sideMenu = Instance.new("Frame")
-    sideMenu.Name = "SideMenu"
-    sideMenu.Size = UDim2.new(0, 180, 1, 0)
-    sideMenu.BackgroundColor3 = theme.side
-    sideMenu.BorderSizePixel = 0
-    sideMenu.Parent = mainFrame
+    local side = Instance.new("Frame", main)
+    side.Size = UDim2.new(0, 190, 1, 0)
+    side.BackgroundColor3 = theme.side_bg
+    side.BorderSizePixel = 0
 
-    local titleLabel = Instance.new("TextLabel")
-    titleLabel.Size = UDim2.new(1, 0, 0, 60)
-    titleLabel.Text = title:upper()
-    titleLabel.Font = Enum.Font.GothamBlack
-    titleLabel.TextColor3 = theme.accent
-    titleLabel.TextSize = 22
-    titleLabel.BackgroundTransparency = 1
-    titleLabel.Parent = sideMenu
+    local t = Instance.new("TextLabel", side)
+    t.Size = UDim2.new(1, 0, 0, 60)
+    t.Text = title:upper()
+    t.Font = Enum.Font.GothamBlack
+    t.TextSize = 22
+    t.TextColor3 = theme.accent
+    t.BackgroundTransparency = 1
 
-    local buttonContainer = Instance.new("Frame")
-    buttonContainer.Name = "ButtonContainer"
-    buttonContainer.Size = UDim2.new(1, 0, 1, -70)
-    buttonContainer.Position = UDim2.new(0, 0, 0, 70)
-    buttonContainer.BackgroundTransparency = 1
-    buttonContainer.Parent = sideMenu
+    local btnContainer = Instance.new("Frame", side)
+    btnContainer.Size = UDim2.new(1, 0, 1, -70)
+    btnContainer.Position = UDim2.new(0, 0, 0, 70)
+    btnContainer.BackgroundTransparency = 1
 
-    local layout = Instance.new("UIListLayout")
-    layout.SortOrder = Enum.SortOrder.LayoutOrder
-    layout.Padding = UDim.new(0, 2)
-    layout.Parent = buttonContainer
+    Instance.new("UIListLayout", btnContainer).SortOrder = Enum.SortOrder.LayoutOrder
 
-    -- Área de Conteúdo
-    local contentArea = Instance.new("Frame")
-    contentArea.Name = "ContentContainer"
-    contentArea.Size = UDim2.new(1, -190, 1, -10)
-    contentArea.Position = UDim2.new(0, 185, 0, 5)
-    contentArea.BackgroundTransparency = 1
-    contentArea.Parent = mainFrame
+    -- Área onde as páginas aparecem
+    local content = Instance.new("Frame", main)
+    content.Name = "Content"
+    content.Size = UDim2.new(1, -210, 1, -20)
+    content.Position = UDim2.new(0, 200, 0, 10)
+    content.BackgroundTransparency = 1
 
     return {
-        screenGui = screenGui,
-        mainFrame = mainFrame,
-        contentContainer = contentArea,
-        sideMenu = sideMenu,
+        sg = sg,
+        content = content,
+        container = btnContainer,
         pages = {},
         buttons = {}
     }
 end
 
 function UI:AddPage(gui, name)
-    local page = Instance.new("ScrollingFrame")
-    page.Name = name .. "Page"
+    local page = Instance.new("ScrollingFrame", gui.content)
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
+    page.Visible = false
     page.ScrollBarThickness = 2
     page.ScrollBarImageColor3 = theme.accent
-    page.Visible = false
-    page.Parent = gui.contentContainer
 
-    local grid = Instance.new("UIGridLayout")
-    grid.CellSize = UDim2.new(0.5, -10, 0, 200) -- Colunas estilo Nolva
+    local grid = Instance.new("UIGridLayout", page)
+    grid.CellSize = UDim2.new(0.5, -10, 0, 220)
     grid.CellPadding = UDim2.new(0, 15, 0, 15)
-    grid.Parent = page
 
-    local btn = Instance.new("TextButton")
-    btn.Size = UDim2.new(1, 0, 0, 45)
-    btn.BackgroundColor3 = theme.side
-    btn.BorderSizePixel = 0
-    btn.Text = "  " .. name:upper()
-    btn.TextColor3 = theme.text
-    btn.Font = Enum.Font.GothamBold
-    btn.TextSize = 14
-    btn.TextXAlignment = Enum.TextXAlignment.Left
-    btn.AutoButtonColor = false
-    btn.Parent = gui.mainFrame.SideMenu.ButtonContainer
+    local b = Instance.new("TextButton", gui.container)
+    b.Size = UDim2.new(1, 0, 0, 40)
+    b.BackgroundColor3 = theme.side_bg
+    b.BorderSizePixel = 0
+    b.Text = "  " .. name
+    b.Font = Enum.Font.GothamBold
+    b.TextColor3 = Color3.fromRGB(150, 150, 150)
+    b.TextXAlignment = Enum.TextXAlignment.Left
 
-    local indicator = Instance.new("Frame")
-    indicator.Size = UDim2.new(0, 4, 1, 0)
-    indicator.BackgroundColor3 = theme.accent
-    indicator.BorderSizePixel = 0
-    indicator.Visible = false
-    indicator.Parent = btn
-
-    btn.MouseButton1Click:Connect(function()
+    b.MouseButton1Click:Connect(function()
         for _, p in pairs(gui.pages) do p.Visible = false end
-        for _, b in pairs(gui.buttons) do 
-            b.TextColor3 = theme.text
-            b.Indicator.Visible = false 
-        end
+        for _, btn in pairs(gui.buttons) do btn.TextColor3 = Color3.fromRGB(150, 150, 150) end
         page.Visible = true
-        btn.TextColor3 = theme.accent
-        indicator.Visible = true
+        b.TextColor3 = theme.accent
     end)
 
     gui.pages[name] = page
-    gui.buttons[name] = {Button = btn, Indicator = indicator}
+    gui.buttons[name] = b
     return page
 end
 
