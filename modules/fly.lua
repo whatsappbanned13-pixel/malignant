@@ -1,44 +1,69 @@
--- Modules/Fly.lua
+-- modules/fly.lua
 local Fly = {}
+
 local player = game:GetService("Players").LocalPlayer
 local runService = game:GetService("RunService")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 
-function Fly:Init(gui, config)
+function Fly:Init(gui, config, elements)
+    -- Criar página
     local page = gui:AddPage(gui, "Movimento", "Movimento")
-    local Elements = require(script.Parent.Parent.GUI.Elements) -- adaptar
     
-    local section = Elements:CreateSection(page, "FLY HACK", config.mainColor)
-    local container = Elements:CreateContainer(page, 150)
+    -- Seção Fly
+    local section = elements:CreateSection(page, "FLY HACK", config.mainColor)
+    local container = elements:CreateContainer(page, 150)
     
-    local enabled = false
-    local speed = config.flySpeed
-    local keybind = config.flyKeybind
-    local flyBV, flyBG
+    self.enabled = false
+    self.speed = config.flySpeed
+    self.keybind = config.flyKeybind
+    self.flyBV = nil
+    self.flyBG = nil
     
-    Elements:CreateToggle(container, "Ativar Fly", false, function(state)
-        enabled = state
-        self:toggle(state, speed)
+    -- Toggle
+    elements:CreateToggle(container, "Ativar Fly", false, function(state)
+        self.enabled = state
+        self:toggle(state)
     end, config.mainColor)
     
-    Elements:CreateSlider(container, "Velocidade", 10, 200, speed, function(value)
-        speed = value
+    -- Slider velocidade
+    elements:CreateSlider(container, "Velocidade", 10, 200, self.speed, function(value)
+        self.speed = value
     end, config.mainColor)
     
-    Elements:CreateKeybind(container, "Keybind", keybind, function(key)
-        keybind = key
+    -- Keybind
+    elements:CreateKeybind(container, "Keybind", self.keybind, function(key)
+        self.keybind = key
     end, config.mainColor)
+    
+    -- Keybind global
+    userInputService.InputBegan:Connect(function(input)
+        if input.KeyCode == Enum.KeyCode[self.keybind] then
+            self.enabled = not self.enabled
+            self:toggle(self.enabled)
+        end
+    end)
     
     -- Loop do fly
     runService.RenderStepped:Connect(function()
-        if enabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
+        if self.enabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local root = player.Character.HumanoidRootPart
-            if not flyBV or not flyBV.Parent then
+            local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
+            
+            if humanoid then
+                humanoid.PlatformStand = true
+            end
+            
+            if not self.flyBV or not self.flyBV.Parent then
                 self:createFlyObjects(root)
             end
             
+            if self.flyBG then
+                self.flyBG.CFrame = camera.CFrame
+            end
+            
             local direction = Vector3.new()
+            
             if userInputService:IsKeyDown(Enum.KeyCode.W) then
                 direction = direction + camera.CFrame.LookVector
             end
@@ -59,23 +84,11 @@ function Fly:Init(gui, config)
             end
             
             if direction.Magnitude > 0 then
-                direction = direction.Unit * speed
-                flyBV.Velocity = direction
+                direction = direction.Unit * self.speed
+                self.flyBV.Velocity = direction
             else
-                flyBV.Velocity = Vector3.new()
+                self.flyBV.Velocity = Vector3.new()
             end
-            
-            if flyBG then
-                flyBG.CFrame = camera.CFrame
-            end
-        end
-    end)
-    
-    -- Keybind global
-    userInputService.InputBegan:Connect(function(input)
-        if input.KeyCode == Enum.KeyCode[keybind] then
-            self:toggle(not enabled, speed)
-            enabled = not enabled
         end
     end)
 end
@@ -95,16 +108,9 @@ function Fly:createFlyObjects(root)
     self.flyBG.P = 20000
     self.flyBG.D = 1000
     self.flyBG.Parent = root
-    
-    if player.Character then
-        local humanoid = player.Character:FindFirstChildOfClass("Humanoid")
-        if humanoid then
-            humanoid.PlatformStand = true
-        end
-    end
 end
 
-function Fly:toggle(state, speed)
+function Fly:toggle(state)
     if state then
         if player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             self:createFlyObjects(player.Character.HumanoidRootPart)
