@@ -1,3 +1,7 @@
+-- Forçar limpeza de cache
+game:GetService("ContentProvider"):Preload("https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/core/ui.lua")
+wait(1)
+
 -- main.lua - S3IKY HACK V3
 local repo = "https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/"
 
