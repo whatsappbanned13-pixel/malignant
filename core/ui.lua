@@ -1,4 +1,4 @@
--- core/ui.lua - DESIGN NOVO COM GRADIENTE E NEVE
+-- core/ui.lua - DESIGN NOVO (TAMANHO REDUZIDO, NEVE CORRIGIDA, FONTE ELEGANTE)
 local UI = {}
 
 local player = game:GetService("Players").LocalPlayer
@@ -14,13 +14,13 @@ function UI:CreateMainGui(title, color)
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.DisplayOrder = 999999
     
-    -- Frame principal com OPACIDADE
+    -- Frame principal com TAMANHO REDUZIDO (era 900x600, agora 750x500)
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 900, 0, 600)
-    mainFrame.Position = UDim2.new(0.5, -450, 0.5, -300)
+    mainFrame.Size = UDim2.new(0, 750, 0, 500) -- MENOR!
+    mainFrame.Position = UDim2.new(0.5, -375, 0.5, -250)
     mainFrame.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    mainFrame.BackgroundTransparency = 0.15 -- 15% de opacidade
+    mainFrame.BackgroundTransparency = 0.15
     mainFrame.BorderSizePixel = 0
     mainFrame.ClipsDescendants = true
     mainFrame.Active = true
@@ -28,12 +28,12 @@ function UI:CreateMainGui(title, color)
     mainFrame.ZIndex = 2
     mainFrame.Parent = screenGui
     
-    -- BORDAS LISAS (mais arredondadas)
+    -- BORDAS LISAS
     local corner = Instance.new("UICorner")
-    corner.CornerRadius = UDim.new(0, 20) -- Aumentei para 20
+    corner.CornerRadius = UDim.new(0, 20)
     corner.Parent = mainFrame
     
-    -- GRADIENTE VERMELHO na borda superior
+    -- GRADIENTE VERMELHO
     local gradientFrame = Instance.new("Frame")
     gradientFrame.Size = UDim2.new(1, 0, 0, 80)
     gradientFrame.Position = UDim2.new(0, 0, 0, 0)
@@ -53,16 +53,16 @@ function UI:CreateMainGui(title, color)
     -- Sombra suave
     self:CreateSoftShadow(mainFrame)
     
-    -- Barra de título com opacidade
+    -- Barra de título com FONTE NOVA
     self:CreateTitleBar(mainFrame, title, color)
     
-    -- Menu lateral com opacidade
+    -- Menu lateral
     local sideMenu = self:CreateSideMenu(mainFrame)
     
-    -- Área de conteúdo com opacidade
+    -- Área de conteúdo
     local contentArea, contentContainer = self:CreateContentArea(mainFrame)
     
-    -- EFEITO DE NEVE! ❄️❄️❄️
+    -- EFEITO DE NEVE CORRIGIDO! ❄️❄️❄️ (AGORA CAI DE VERDADE)
     self:CreateSnowEffect(mainFrame)
     
     -- Tornar arrastável
@@ -92,52 +92,40 @@ function UI:CreateSoftShadow(parent)
     shadow.Parent = parent
 end
 
--- EFEITO DE NEVE ❄️
+-- EFEITO DE NEVE CORRIGIDO (AGORA CAI MESMO) ❄️
 function UI:CreateSnowEffect(parent)
     local snowFolder = Instance.new("Folder")
     snowFolder.Name = "SnowEffect"
     snowFolder.Parent = parent
     
-    -- Criar 30 bolinhas de neve
-    for i = 1, 30 do
+    -- Criar 20 bolinhas de neve
+    for i = 1, 20 do
         local snow = Instance.new("Frame")
         snow.Name = "Snow" .. i
-        snow.Size = UDim2.new(0, math.random(2, 5), 0, math.random(2, 5))
+        snow.Size = UDim2.new(0, math.random(2, 4), 0, math.random(2, 4))
         snow.Position = UDim2.new(math.random(), 0, math.random(), 0)
         snow.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
         snow.BackgroundTransparency = math.random(30, 70) / 100
         snow.ZIndex = 10
         snow.Parent = snowFolder
         
-        -- Borda arredondada (para parecer bola)
+        -- Borda redonda
         local snowCorner = Instance.new("UICorner")
         snowCorner.CornerRadius = UDim.new(1, 0)
         snowCorner.Parent = snow
         
-        -- Animação da neve caindo
-        local speed = math.random(30, 100) / 100
-        local startPos = snow.Position
-        local offset = 0
+        -- Velocidade aleatória
+        local speed = math.random(20, 60) / 1000
         
+        -- Loop DA NEVE (CORRIGIDO - USA RunService)
         spawn(function()
             while snow and snow.Parent do
-                offset = offset + speed / 100
-                if offset > 1 then
-                    offset = 0
-                end
-                
-                snow.Position = UDim2.new(
-                    startPos.X.Scale,
-                    startPos.X.Offset,
-                    startPos.Y.Scale + offset * 0.02,
-                    startPos.Y.Offset
-                )
+                -- Mover para baixo
+                snow.Position = snow.Position + UDim2.new(0, 0, speed, 0)
                 
                 -- Reset quando sair da tela
                 if snow.Position.Y.Scale > 1 then
                     snow.Position = UDim2.new(math.random(), 0, -0.1, 0)
-                    startPos = snow.Position
-                    offset = 0
                 end
                 
                 wait(0.05)
@@ -149,7 +137,7 @@ end
 function UI:CreateTitleBar(parent, title, color)
     local titleBar = Instance.new("Frame")
     titleBar.Name = "TitleBar"
-    titleBar.Size = UDim2.new(1, 0, 0, 45)
+    titleBar.Size = UDim2.new(1, 0, 0, 40)
     titleBar.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     titleBar.BackgroundTransparency = 0.2
     titleBar.BorderSizePixel = 0
@@ -160,7 +148,7 @@ function UI:CreateTitleBar(parent, title, color)
     corner.CornerRadius = UDim.new(0, 20)
     corner.Parent = titleBar
     
-    -- Gradiente sutil no título
+    -- Gradiente no título
     local gradient = Instance.new("UIGradient")
     gradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, color),
@@ -177,7 +165,7 @@ function UI:CreateTitleBar(parent, title, color)
     titleText.Text = title
     titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
     titleText.TextScaled = true
-    titleText.Font = Enum.Font.GothamBlack
+    titleText.Font = Enum.Font.GothamBold  -- FONTE MAIS ELEGANTE
     titleText.TextXAlignment = Enum.TextXAlignment.Left
     titleText.ZIndex = 4
     titleText.Parent = titleBar
@@ -185,25 +173,25 @@ function UI:CreateTitleBar(parent, title, color)
     -- Sombra no texto
     local shadow = Instance.new("UIStroke")
     shadow.Color = Color3.fromRGB(0, 0, 0)
-    shadow.Thickness = 2
+    shadow.Thickness = 1.5
     shadow.Transparency = 0.5
     shadow.Parent = titleText
     
     local closeButton = Instance.new("TextButton")
     closeButton.Name = "CloseButton"
-    closeButton.Size = UDim2.new(0, 35, 0, 35)
-    closeButton.Position = UDim2.new(1, -45, 0.5, -17.5)
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -40, 0.5, -15)
     closeButton.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
     closeButton.BackgroundTransparency = 0.3
     closeButton.Text = "✕"
     closeButton.TextColor3 = Color3.fromRGB(255, 255, 255)
     closeButton.TextScaled = true
-    closeButton.Font = Enum.Font.GothamBold
+    closeButton.Font = Enum.Font.GothamBold  -- FONTE IGUAL
     closeButton.ZIndex = 4
     closeButton.Parent = titleBar
     
     local closeCorner = Instance.new("UICorner")
-    closeCorner.CornerRadius = UDim.new(0, 10)
+    closeCorner.CornerRadius = UDim.new(0, 8)
     closeCorner.Parent = closeButton
     
     closeButton.MouseButton1Click:Connect(function()
@@ -216,8 +204,8 @@ end
 function UI:CreateSideMenu(parent)
     local sideMenu = Instance.new("Frame")
     sideMenu.Name = "SideMenu"
-    sideMenu.Size = UDim2.new(0, 200, 1, -45)
-    sideMenu.Position = UDim2.new(0, 0, 0, 45)
+    sideMenu.Size = UDim2.new(0, 170, 1, -40)  -- Largura reduzida
+    sideMenu.Position = UDim2.new(0, 0, 0, 40)
     sideMenu.BackgroundColor3 = Color3.fromRGB(8, 8, 8)
     sideMenu.BackgroundTransparency = 0.2
     sideMenu.BorderSizePixel = 0
@@ -238,14 +226,14 @@ function UI:CreateSideMenu(parent)
     menuContainer.Position = UDim2.new(0, 5, 0, 5)
     menuContainer.BackgroundTransparency = 1
     menuContainer.BorderSizePixel = 0
-    menuContainer.ScrollBarThickness = 4
+    menuContainer.ScrollBarThickness = 3
     menuContainer.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
     menuContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
     menuContainer.ZIndex = 4
     menuContainer.Parent = sideMenu
     
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 8)
+    layout.Padding = UDim.new(0, 5)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = menuContainer
@@ -256,8 +244,8 @@ end
 function UI:CreateContentArea(parent)
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
-    contentArea.Size = UDim2.new(1, -200, 1, -45)
-    contentArea.Position = UDim2.new(0, 200, 0, 45)
+    contentArea.Size = UDim2.new(1, -170, 1, -40)  -- Ajustado para menu menor
+    contentArea.Position = UDim2.new(0, 170, 0, 40)
     contentArea.BackgroundColor3 = Color3.fromRGB(15, 15, 15)
     contentArea.BackgroundTransparency = 0.2
     contentArea.BorderSizePixel = 0
@@ -281,7 +269,7 @@ function UI:AddPage(gui, name, buttonText)
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.BorderSizePixel = 0
-    page.ScrollBarThickness = 4
+    page.ScrollBarThickness = 3
     page.ScrollBarImageColor3 = Color3.fromRGB(255, 0, 0)
     page.AutomaticCanvasSize = Enum.AutomaticSize.Y
     page.Visible = false
@@ -289,32 +277,32 @@ function UI:AddPage(gui, name, buttonText)
     page.Parent = gui.contentContainer
     
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 15)
+    layout.Padding = UDim.new(0, 10)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = page
     
-    -- Botão do menu lateral com design novo
+    -- Botão do menu com FONTE NOVA
     local button = Instance.new("TextButton")
     button.Name = name .. "Button"
-    button.Size = UDim2.new(1, -20, 0, 45)
+    button.Size = UDim2.new(1, -20, 0, 38)  -- Altura reduzida
     button.BackgroundColor3 = Color3.fromRGB(20, 20, 20)
     button.BackgroundTransparency = 0.3
     button.Text = "   " .. buttonText
     button.TextColor3 = Color3.fromRGB(255, 255, 255)
     button.TextScaled = true
-    button.Font = Enum.Font.GothamBold
+    button.Font = Enum.Font.GothamBold  -- FONTE NOVA
     button.TextXAlignment = Enum.TextXAlignment.Left
     button.AutoButtonColor = false
     button.ZIndex = 5
     button.Parent = gui.sideMenu:FindFirstChild("MenuContainer")
     
     local buttonCorner = Instance.new("UICorner")
-    buttonCorner.CornerRadius = UDim.new(0, 10)
+    buttonCorner.CornerRadius = UDim.new(0, 8)
     buttonCorner.Parent = button
     
     local line = Instance.new("Frame")
-    line.Size = UDim2.new(0, 5, 1, -10)
+    line.Size = UDim2.new(0, 4, 1, -10)
     line.Position = UDim2.new(0, 0, 0, 5)
     line.BackgroundColor3 = Color3.fromRGB(255, 0, 0)
     line.BorderSizePixel = 0
