@@ -45,4 +45,22 @@ local gui = UI:CreateMainGui("S3IKY HACK V3", Settings.mainColor)
 -- Lista de módulos para carregar
 local moduleNames = {
     "fly"
-    -- Adicione mais módulos aqui: "speed", "infinitejump", "aimbot", "esp
+    -- Adicione mais módulos aqui: "speed", "infinitejump", "aimbot", "esp", "stick", "teleport"
+}
+
+-- Carregar módulos
+for _, name in ipairs(moduleNames) do
+    local module = loadModule("modules/" .. name .. ".lua")
+    if module and module.Init then
+        module:Init(gui, Settings, Elements)
+        print("✅ Módulo carregado: " .. name)
+    end
+end
+
+-- Configurar navegação entre páginas
+UI:SetupNavigation(gui)
+
+-- Finalizar
+Init:Finish(gui)
+
+print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
