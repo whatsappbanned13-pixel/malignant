@@ -1,4 +1,4 @@
--- main.lua - S3IKY HACK V3 (Carregador de Módulos)
+-- main.lua - MALIGNANT HACK (Carregador de Módulos)
 local repo = "https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/"
 
 -- =============== ANTI-CACHE ===============
@@ -18,7 +18,7 @@ local function loadModule(path)
     return fn()
 end
 
-print("🚀 Iniciando S3IKY HACK...")
+print("🚀 Iniciando MALIGNANT HACK...")
 
 -- Carregar configurações
 local Settings = loadModule("config/settings.lua")
@@ -42,58 +42,69 @@ print("✅ Configurações carregadas")
 -- Inicializar
 Init:Setup(Settings, Places)
 
--- Criar GUI (AGORA COM DESIGN NOVO)
-local gui = UI:CreateMainGui("S3IKY HACK V3", Settings.mainColor)
+-- Criar GUI
+local gui = UI:CreateMainGui("MALIGNANT", Settings.mainColor)
 
 -- =============== CRIAR PÁGINAS ===============
 
--- Página Movimento
-local movePage = UI:AddPage(gui, "Movimento", "Movimento")
-local moveContainer = Elements:CreateContainer(movePage, 400)
+-- Lista de todas as páginas
+local pages = {
+    {"Movimento", "Movimento"},
+    {"Aimbot", "Aimbot"},
+    {"Visuais", "Visuais"},
+    {"Teleport", "Teleport"},
+    {"Grudar", "Grudar"},
+    {"Lugares", "Lugares"}
+}
 
--- Carregar módulo Fly
+-- Criar cada página
+for _, pageInfo in ipairs(pages) do
+    local pageName = pageInfo[1]
+    local pageTitle = pageInfo[2]
+    
+    local page = UI:AddPage(gui, pageName, pageTitle)
+    
+    -- Adicionar container em cada página
+    if pageName == "Movimento" then
+        local container = Elements:CreateContainer(page, 400)
+        Elements:CreateToggle(container, "Fly", false, function(state)
+            print("Fly:", state)
+        end, Settings.mainColor)
+    elseif pageName == "Aimbot" then
+        local container = Elements:CreateContainer(page, 200)
+        Elements:CreateToggle(container, "Aimbot", false, function(state)
+            print("Aimbot:", state)
+        end, Settings.mainColor)
+    elseif pageName == "Visuais" then
+        local container = Elements:CreateContainer(page, 200)
+        Elements:CreateToggle(container, "ESP", false, function(state)
+            print("ESP:", state)
+        end, Settings.mainColor)
+    elseif pageName == "Teleport" then
+        local container = Elements:CreateContainer(page, 200)
+        Elements:CreateToggle(container, "Teleport", false, function(state)
+            print("Teleport:", state)
+        end, Settings.mainColor)
+    elseif pageName == "Grudar" then
+        local container = Elements:CreateContainer(page, 200)
+        Elements:CreateToggle(container, "Grudar", false, function(state)
+            print("Grudar:", state)
+        end, Settings.mainColor)
+    elseif pageName == "Lugares" then
+        local container = Elements:CreateContainer(page, 400)
+        for name, data in pairs(Places) do
+            Elements:CreateToggle(container, name, false, function(state)
+                print("Ir para:", name)
+            end, data.color or Settings.mainColor)
+        end
+    end
+end
+
+-- Carregar módulo Fly (se existir)
 local Fly = loadModule("modules/fly.lua")
 if Fly and Fly.Init then
     Fly:Init(gui, UI, Settings, Elements)
     print("✅ Fly carregado")
-end
-
--- Página Aimbot
-local aimPage = UI:AddPage(gui, "Aimbot", "Aimbot")
-local aimContainer = Elements:CreateContainer(aimPage, 200)
-Elements:CreateToggle(aimContainer, "Aimbot", false, function(state)
-    print("Aimbot:", state)
-end, Settings.mainColor)
-
--- Página Visuais
-local visPage = UI:AddPage(gui, "Visuais", "Visuais")
-local visContainer = Elements:CreateContainer(visPage, 200)
-Elements:CreateToggle(visContainer, "ESP", false, function(state)
-    print("ESP:", state)
-end, Settings.mainColor)
-
--- Página Teleport
-local telePage = UI:AddPage(gui, "Teleport", "Teleport")
-local teleContainer = Elements:CreateContainer(telePage, 200)
-Elements:CreateToggle(teleContainer, "Teleport", false, function(state)
-    print("Teleport:", state)
-end, Settings.mainColor)
-
--- Página Grudar
-local stickPage = UI:AddPage(gui, "Grudar", "Grudar")
-local stickContainer = Elements:CreateContainer(stickPage, 200)
-Elements:CreateToggle(stickContainer, "Grudar", false, function(state)
-    print("Grudar:", state)
-end, Settings.mainColor)
-
--- Página Lugares
-local placesPage = UI:AddPage(gui, "Lugares", "Lugares")
-local placesContainer = Elements:CreateContainer(placesPage, 400)
-
-for name, data in pairs(Places) do
-    Elements:CreateToggle(placesContainer, name, false, function(state)
-        print("Ir para:", name)
-    end, data.color or Settings.mainColor)
 end
 
 -- Configurar navegação
@@ -102,5 +113,5 @@ UI:SetupNavigation(gui)
 -- Finalizar
 Init:Finish(gui)
 
-print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
-print("✅ Design novo carregado! Neve caindo ❄️")
+print("🎯 MALIGNANT HACK pronto! Pressione CTRL para abrir")
+print("✅ Design final carregado!")
