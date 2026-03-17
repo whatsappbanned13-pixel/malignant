@@ -384,3 +384,4 @@ function UI:MakeDraggable(frame)
 end
 
 return UI
+//Atualizando UI
