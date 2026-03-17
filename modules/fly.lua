@@ -6,9 +6,9 @@ local runService = game:GetService("RunService")
 local userInputService = game:GetService("UserInputService")
 local camera = workspace.CurrentCamera
 
-function Fly:Init(gui, config, elements)
-    -- Criar página
-    local page = gui:AddPage(gui, "Movimento", "Movimento")
+function Fly:Init(gui, UI, config, elements)
+    -- CRIAR PÁGINA USANDO O UI (NÃO O GUI)
+    local page = UI:AddPage(gui, "Movimento", "Movimento")
     
     -- Seção Fly
     local section = elements:CreateSection(page, "FLY HACK", config.mainColor)
@@ -44,7 +44,7 @@ function Fly:Init(gui, config, elements)
         end
     end)
     
-    -- Loop do fly
+    -- Loop do fly (já existia)
     runService.RenderStepped:Connect(function()
         if self.enabled and player.Character and player.Character:FindFirstChild("HumanoidRootPart") then
             local root = player.Character.HumanoidRootPart
