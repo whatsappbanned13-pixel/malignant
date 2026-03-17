@@ -1,13 +1,16 @@
--- Forçar limpeza de cache
-game:GetService("ContentProvider"):Preload("https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/core/ui.lua")
-wait(1)
-
--- main.lua - S3IKY HACK V3
+-- main.lua - S3IKY HACK V3 (COM ANTI-CACHE)
 local repo = "https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/"
 
+-- =============== ANTI-CACHE ===============
+-- Adiciona um número aleatório na URL para forçar recarregar
+local function getUrl(path)
+    return repo .. path .. "?nocache=" .. math.random(1000000, 9999999)
+end
+
+-- Função para carregar módulos com anti-cache
 local function loadModule(path)
-    local url = repo .. path
-    print("📥 Carregando: " .. path)
+    local url = getUrl(path)
+    print("📥 Carregando: " .. path .. " (cache bypass)")
     
     local content = game:HttpGet(url)
     local fn = loadstring(content)
@@ -20,6 +23,10 @@ local function loadModule(path)
 end
 
 print("🚀 Iniciando S3IKY HACK...")
+
+-- Forçar pré-carregamento dos principais
+game:GetService("ContentProvider"):Preload(getUrl("core/ui.lua"))
+wait(0.5)
 
 -- Carregar configurações
 local Settings = loadModule("config/settings.lua")
@@ -43,48 +50,42 @@ print("✅ Configurações carregadas")
 -- Inicializar
 Init:Setup(Settings, Places)
 
--- Criar GUI
+-- Criar GUI (AGORA VAI CARREGAR A NOVA VERSÃO!)
 local gui = UI:CreateMainGui("S3IKY HACK V3", Settings.mainColor)
-
--- =============================================
--- CRIAR PÁGINAS MANUALMENTE PARA TESTE
--- =============================================
 
 -- Página Movimento
 local movePage = UI:AddPage(gui, "Movimento", "Movimento")
 local moveContainer = Elements:CreateContainer(movePage, 400)
 
--- Carregar módulo Fly (passando UI como parâmetro)
+-- Carregar módulo Fly
 local Fly = loadModule("modules/fly.lua")
 if Fly and Fly.Init then
-    Fly:Init(gui, UI, Settings, Elements)  -- AGORA PASSA UI TAMBÉM
+    Fly:Init(gui, UI, Settings, Elements)
     print("✅ Fly carregado")
 end
 
--- Criar outras páginas para teste
+-- Criar outras páginas
 local aimPage = UI:AddPage(gui, "Aimbot", "Aimbot")
 local aimContainer = Elements:CreateContainer(aimPage, 200)
-Elements:CreateToggle(aimContainer, "Aimbot (teste)", false, function(state)
+Elements:CreateToggle(aimContainer, "Aimbot", false, function(state)
     print("Aimbot:", state)
 end, Settings.mainColor)
 
 local visPage = UI:AddPage(gui, "Visuais", "Visuais")
 local visContainer = Elements:CreateContainer(visPage, 200)
-Elements:CreateToggle(visContainer, "ESP (teste)", false, function(state)
+Elements:CreateToggle(visContainer, "ESP", false, function(state)
     print("ESP:", state)
 end, Settings.mainColor)
 
--- Página Teleport
 local telePage = UI:AddPage(gui, "Teleport", "Teleport")
 local teleContainer = Elements:CreateContainer(telePage, 200)
-Elements:CreateToggle(teleContainer, "Teleport (teste)", false, function(state)
+Elements:CreateToggle(teleContainer, "Teleport", false, function(state)
     print("Teleport:", state)
 end, Settings.mainColor)
 
--- Página Grudar
 local stickPage = UI:AddPage(gui, "Grudar", "Grudar")
 local stickContainer = Elements:CreateContainer(stickPage, 200)
-Elements:CreateToggle(stickContainer, "Grudar (teste)", false, function(state)
+Elements:CreateToggle(stickContainer, "Grudar", false, function(state)
     print("Grudar:", state)
 end, Settings.mainColor)
 
@@ -92,7 +93,6 @@ end, Settings.mainColor)
 local placesPage = UI:AddPage(gui, "Lugares", "Lugares")
 local placesContainer = Elements:CreateContainer(placesPage, 400)
 
--- Criar botões para cada lugar
 for name, data in pairs(Places) do
     Elements:CreateToggle(placesContainer, name, false, function(state)
         print("Ir para:", name)
@@ -106,4 +106,4 @@ UI:SetupNavigation(gui)
 Init:Finish(gui)
 
 print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
-print("✅ Páginas criadas:", #gui.pages)
+print("✅ Design NOVO carregado! Neve caindo ❄️")
