@@ -1,4 +1,4 @@
--- core/ui.lua - VERSÃO RETANGULAR MODERNA
+-- core/ui.lua - VERSÃO CORRIGIDA (Tamanho ajustado, seleção funcionando)
 local UI = {}
 
 local player = game:GetService("Players").LocalPlayer
@@ -12,12 +12,12 @@ function UI:CreateMainGui(title, color)
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.DisplayOrder = 999999
     
-    -- Frame principal (MAIOR E RETANGULAR)
+    -- Frame principal (MAIS LARGO E MENOS ALTO)
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
-    mainFrame.Size = UDim2.new(0, 850, 0, 500)  -- MAIS LARGO
-    mainFrame.Position = UDim2.new(0.5, -425, 0.5, -250)
-    mainFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 22)  -- #161616
+    mainFrame.Size = UDim2.new(0, 950, 0, 450)  -- MAIS LARGO (950) e MENOS ALTO (450)
+    mainFrame.Position = UDim2.new(0.5, -475, 0.5, -225)
+    mainFrame.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
     mainFrame.BackgroundTransparency = 0
     mainFrame.BorderSizePixel = 0
     mainFrame.ClipsDescendants = true
@@ -27,19 +27,10 @@ function UI:CreateMainGui(title, color)
     mainFrame.ZIndex = 2
     mainFrame.Parent = screenGui
     
-    -- BORDA SUTIL (opcional)
-    local border = Instance.new("Frame")
-    border.Size = UDim2.new(1, 2, 1, 2)
-    border.Position = UDim2.new(0, -1, 0, -1)
-    border.BackgroundColor3 = Color3.fromRGB(30, 30, 30)
-    border.BackgroundTransparency = 0.5
-    border.ZIndex = 1
-    border.Parent = mainFrame
-    
-    -- Barra de título
+    -- Barra de título (mais fina)
     self:CreateTitleBar(mainFrame, title, color)
     
-    -- Menu lateral (mais largo)
+    -- Menu lateral (um pouco mais largo)
     local sideMenu = self:CreateSideMenu(mainFrame)
     
     -- Área de conteúdo
@@ -61,8 +52,8 @@ end
 function UI:CreateTitleBar(parent, title, color)
     local titleBar = Instance.new("Frame")
     titleBar.Name = "TitleBar"
-    titleBar.Size = UDim2.new(1, 0, 0, 45)
-    titleBar.BackgroundColor3 = Color3.fromRGB(18, 18, 18)  -- Mais escuro que o fundo
+    titleBar.Size = UDim2.new(1, 0, 0, 35)  -- TÍTULO MAIS FINO (35px)
+    titleBar.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
     titleBar.BackgroundTransparency = 0
     titleBar.BorderSizePixel = 0
     titleBar.ZIndex = 3
@@ -71,7 +62,7 @@ function UI:CreateTitleBar(parent, title, color)
     local titleText = Instance.new("TextLabel")
     titleText.Name = "TitleText"
     titleText.Size = UDim2.new(0, 250, 1, 0)
-    titleText.Position = UDim2.new(0, 20, 0, 0)
+    titleText.Position = UDim2.new(0, 15, 0, 0)
     titleText.BackgroundTransparency = 1
     titleText.Text = title
     titleText.TextColor3 = Color3.fromRGB(255, 255, 255)
@@ -83,8 +74,8 @@ function UI:CreateTitleBar(parent, title, color)
     
     local closeButton = Instance.new("TextButton")
     closeButton.Name = "CloseButton"
-    closeButton.Size = UDim2.new(0, 35, 0, 35)
-    closeButton.Position = UDim2.new(1, -45, 0.5, -17.5)
+    closeButton.Size = UDim2.new(0, 30, 0, 30)
+    closeButton.Position = UDim2.new(1, -40, 0.5, -15)
     closeButton.BackgroundColor3 = Color3.fromRGB(40, 40, 40)
     closeButton.BackgroundTransparency = 0
     closeButton.Text = "✕"
@@ -104,15 +95,15 @@ end
 function UI:CreateSideMenu(parent)
     local sideMenu = Instance.new("Frame")
     sideMenu.Name = "SideMenu"
-    sideMenu.Size = UDim2.new(0, 200, 1, -45)  -- MAIS LARGO (200px)
-    sideMenu.Position = UDim2.new(0, 0, 0, 45)
-    sideMenu.BackgroundColor3 = Color3.fromRGB(18, 18, 18)  -- #121212
+    sideMenu.Size = UDim2.new(0, 220, 1, -35)  -- MAIS LARGO (220px) e ajustado ao título
+    sideMenu.Position = UDim2.new(0, 0, 0, 35)
+    sideMenu.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
     sideMenu.BackgroundTransparency = 0
     sideMenu.BorderSizePixel = 0
     sideMenu.ZIndex = 3
     sideMenu.Parent = parent
     
-    -- Linha divisória sutil
+    -- Linha divisória
     local divider = Instance.new("Frame")
     divider.Size = UDim2.new(0, 1, 1, -20)
     divider.Position = UDim2.new(1, -1, 0, 10)
@@ -127,13 +118,13 @@ function UI:CreateSideMenu(parent)
     menuContainer.BackgroundTransparency = 1
     menuContainer.BorderSizePixel = 0
     menuContainer.ScrollBarThickness = 4
-    menuContainer.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 0)  -- VERDE
+    menuContainer.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 0)
     menuContainer.AutomaticCanvasSize = Enum.AutomaticSize.Y
     menuContainer.ZIndex = 4
     menuContainer.Parent = sideMenu
     
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 2)  -- SEM ESPAÇO (encostado)
+    layout.Padding = UDim.new(0, 2)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = menuContainer
@@ -144,9 +135,9 @@ end
 function UI:CreateContentArea(parent)
     local contentArea = Instance.new("Frame")
     contentArea.Name = "ContentArea"
-    contentArea.Size = UDim2.new(1, -200, 1, -45)  -- Ajustado para menu de 200px
-    contentArea.Position = UDim2.new(0, 200, 0, 45)
-    contentArea.BackgroundColor3 = Color3.fromRGB(26, 26, 26)  -- #1A1A1A
+    contentArea.Size = UDim2.new(1, -220, 1, -35)  -- Ajustado para menu de 220px
+    contentArea.Position = UDim2.new(0, 220, 0, 35)
+    contentArea.BackgroundColor3 = Color3.fromRGB(26, 26, 26)
     contentArea.BackgroundTransparency = 0
     contentArea.BorderSizePixel = 0
     contentArea.ZIndex = 3
@@ -164,13 +155,14 @@ function UI:CreateContentArea(parent)
 end
 
 function UI:AddPage(gui, name, buttonText)
+    -- Criar página
     local page = Instance.new("ScrollingFrame")
     page.Name = name .. "Page"
     page.Size = UDim2.new(1, 0, 1, 0)
     page.BackgroundTransparency = 1
     page.BorderSizePixel = 0
     page.ScrollBarThickness = 4
-    page.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 0)  -- VERDE
+    page.ScrollBarImageColor3 = Color3.fromRGB(0, 255, 0)
     page.AutomaticCanvasSize = Enum.AutomaticSize.Y
     page.Visible = false
     page.ZIndex = 5
@@ -182,13 +174,13 @@ function UI:AddPage(gui, name, buttonText)
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = page
     
-    -- Botão do menu (SEM ESPAÇO, encostado na parede)
+    -- Criar botão do menu
     local button = Instance.new("TextButton")
     button.Name = name .. "Button"
-    button.Size = UDim2.new(1, 0, 0, 42)  -- Largura total, sem margem
-    button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)  -- Mesmo do fundo
+    button.Size = UDim2.new(1, 0, 0, 38)  -- Botões um pouco menores
+    button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
     button.BackgroundTransparency = 0
-    button.Text = "  " .. buttonText  -- Só um pequeno espaçamento
+    button.Text = "  " .. buttonText
     button.TextColor3 = Color3.fromRGB(180, 180, 180)
     button.TextScaled = true
     button.Font = Enum.Font.GothamBold
@@ -197,26 +189,51 @@ function UI:AddPage(gui, name, buttonText)
     button.ZIndex = 5
     button.Parent = gui.sideMenu:FindFirstChild("MenuContainer")
     
-    -- Linha indicadora (verde quando selecionado)
+    -- Linha indicadora (verde)
     local line = Instance.new("Frame")
     line.Size = UDim2.new(0, 4, 1, 0)
-    line.BackgroundColor3 = Color3.fromRGB(0, 255, 0)  -- VERDE
-    line.BackgroundTransparency = 0.3
+    line.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
+    line.BackgroundTransparency = 0
     line.Visible = false
     line.ZIndex = 6
     line.Parent = button
     
-    -- Gradiente para o botão selecionado (VERDE)
+    -- Gradiente para o botão selecionado
     local gradient = Instance.new("UIGradient")
     gradient.Color = ColorSequence.new({
         ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.5, Color3.fromRGB(0, 180, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 100, 0))
+        ColorSequenceKeypoint.new(0.7, Color3.fromRGB(0, 100, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(22, 22, 22))
     })
     gradient.Rotation = 90
     gradient.Visible = false
     gradient.Parent = button
     
+    -- Evento de clique (DIRETO NO BOTÃO)
+    button.MouseButton1Click:Connect(function()
+        -- Resetar todos os botões
+        for _, btnData in pairs(gui.buttons) do
+            btnData.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+            btnData.button.TextColor3 = Color3.fromRGB(180, 180, 180)
+            btnData.line.Visible = false
+            if btnData.gradient then
+                btnData.gradient.Visible = false
+            end
+        end
+        
+        -- Ativar este botão
+        button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+        button.TextColor3 = Color3.fromRGB(0, 255, 0)
+        line.Visible = true
+        gradient.Visible = true
+        
+        -- Mostrar página correspondente
+        for pageName, page in pairs(gui.pages) do
+            page.Visible = (pageName == name)
+        end
+    end)
+    
+    -- Armazenar referências
     gui.pages[name] = page
     gui.buttons[name] = {
         button = button,
@@ -228,33 +245,7 @@ function UI:AddPage(gui, name, buttonText)
 end
 
 function UI:SetupNavigation(gui)
-    for name, data in pairs(gui.buttons) do
-        data.button.MouseButton1Click:Connect(function()
-            for _, btnData in pairs(gui.buttons) do
-                -- Resetar todos os botões
-                btnData.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-                btnData.button.TextColor3 = Color3.fromRGB(180, 180, 180)
-                btnData.line.Visible = false
-                if btnData.gradient then
-                    btnData.gradient.Visible = false
-                end
-            end
-            
-            -- Ativar botão clicado com GRADIENTE VERDE
-            data.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)  -- Mantém fundo
-            data.button.TextColor3 = Color3.fromRGB(0, 255, 0)  -- Texto verde
-            data.line.Visible = true
-            if data.gradient then
-                data.gradient.Visible = true  -- Ativa gradiente verde
-            end
-            
-            for pageName, page in pairs(gui.pages) do
-                page.Visible = (pageName == name)
-            end
-        end)
-    end
-    
-    -- Ativar primeira página
+    -- Ativar primeira página automaticamente
     local firstName = next(gui.buttons)
     if firstName then
         local firstData = gui.buttons[firstName]
@@ -273,7 +264,8 @@ function UI:MakeDraggable(frame)
     local dragStart
     local startPos
     
-    local titleBar = frame:FindFirstChild("TitleBar")
+    local titleBar = frame:FindChild("TitleBar")
+    if not titleBar then return end
     
     titleBar.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
