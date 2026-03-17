@@ -1,57 +1,63 @@
--- MAIN.lua - S3IKY HACK V3
--- GitHub: https://github.com/seuusuario/S3IKY-HACK
+-- main.lua - S3IKY HACK
+local repo = "https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/"
 
-local repo = "raw.githubusercontent.com/seuusuario/S3IKY-HACK/main/"
-
--- Função para carregar módulos com segurança
+-- Função para carregar módulos
 local function loadModule(path)
-    local success, module = pcall(function()
-        return loadstring(game:HttpGet(repo .. path))()
-    end)
-    if not success then
-        warn("❌ Erro ao carregar: " .. path)
+    local url = repo .. path
+    print("📥 Carregando: " .. path)
+    
+    local content = game:HttpGet(url)
+    local fn = loadstring(content)
+    if not fn then
+        warn("❌ Erro ao compilar: " .. path)
         return nil
     end
-    return module
+    
+    return fn()
 end
 
--- Carregar configurações primeiro
-local Config = loadModule("Config/Settings.lua")
-local Places = loadModule("Config/Places.lua")
+print("🚀 Iniciando S3IKY HACK...")
+
+-- Carregar configurações (pastas em minúsculas)
+local Settings = loadModule("config/settings.lua")
+local Places = loadModule("config/places.lua")
 
 -- Carregar core
-local Init = loadModule("Core/Init.lua")
-local UI = loadModule("Core/UI.lua")
+local Init = loadModule("core/init.lua")
+local UI = loadModule("core/ui.lua")
 
--- Inicializar core
-Init:Setup(Config, Places)
+-- Carregar GUI
+local Elements = loadModule("gui/elements.lua")
 
--- Criar GUI principal
-local gui = UI:CreateMainGui("S3IKY HACK V3", Config.mainColor)
-
--- Lista de módulos para carregar
-local modules = {
-    "Fly",
-    "Speed", 
-    "InfiniteJump",
-    "Aimbot",
-    "ESP",
-    "Stick",
-    "Teleport"
-}
-
--- Carregar cada módulo
-for _, moduleName in ipairs(modules) do
-    local module = loadModule("Modules/" .. moduleName .. ".lua")
-    if module then
-        module:Init(gui, Config, Places)
-        print("✅ Carregado: " .. moduleName)
-    end
+-- Verificar se tudo carregou
+if not Settings or not Places or not Init or not UI or not Elements then
+    warn("❌ Erro: Módulos principais não carregaram")
+    return
 end
 
--- Configurar navegação entre páginas
-UI:SetupNavigation(gui)
+print("✅ Configurações carregadas")
+
+-- Inicializar
+Init:Setup(Settings, Places)
+
+-- Criar GUI
+local gui = UI:CreateMainGui("S3IKY HACK", Settings.mainColor)
+
+-- Carregar módulos (opcionais)
+local modules = {
+    Fly = loadModule("modules/fly.lua")
+    -- Adicione mais módulos aqui depois
+}
+
+-- Inicializar módulos
+for name, module in pairs(modules) do
+    if module and module.Init then
+        module:Init(gui, Settings, Elements)
+        print("✅ Módulo carregado: " .. name)
+    end
+end
 
 -- Finalizar
 Init:Finish(gui)
+
 print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
