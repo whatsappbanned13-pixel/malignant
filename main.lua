@@ -1,7 +1,6 @@
--- main.lua - S3IKY HACK
+-- main.lua - S3IKY HACK V3
 local repo = "https://raw.githubusercontent.com/whatsappbanned13-pixel/malignant/main/"
 
--- Função para carregar módulos
 local function loadModule(path)
     local url = repo .. path
     print("📥 Carregando: " .. path)
@@ -18,7 +17,7 @@ end
 
 print("🚀 Iniciando S3IKY HACK...")
 
--- Carregar configurações (pastas em minúsculas)
+-- Carregar configurações
 local Settings = loadModule("config/settings.lua")
 local Places = loadModule("config/places.lua")
 
@@ -41,23 +40,9 @@ print("✅ Configurações carregadas")
 Init:Setup(Settings, Places)
 
 -- Criar GUI
-local gui = UI:CreateMainGui("S3IKY HACK", Settings.mainColor)
+local gui = UI:CreateMainGui("S3IKY HACK V3", Settings.mainColor)
 
--- Carregar módulos (opcionais)
-local modules = {
-    Fly = loadModule("modules/fly.lua")
-    -- Adicione mais módulos aqui depois
-}
-
--- Inicializar módulos
-for name, module in pairs(modules) do
-    if module and module.Init then
-        module:Init(gui, Settings, Elements)
-        print("✅ Módulo carregado: " .. name)
-    end
-end
-
--- Finalizar
-Init:Finish(gui)
-
-print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
+-- Lista de módulos para carregar
+local moduleNames = {
+    "fly"
+    -- Adicione mais módulos aqui: "speed", "infinitejump", "aimbot", "esp
