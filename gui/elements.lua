@@ -1,4 +1,4 @@
--- GUI/Elements.lua
+-- gui/elements.lua
 local Elements = {}
 
 local tweenService = game:GetService("TweenService")
