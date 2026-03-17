@@ -1,4 +1,4 @@
--- Config/Settings.lua
+-- config/settings.lua
 local Settings = {
     -- Cores
     mainColor = Color3.fromRGB(255, 0, 0),
