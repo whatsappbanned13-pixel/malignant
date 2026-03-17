@@ -42,25 +42,63 @@ Init:Setup(Settings, Places)
 -- Criar GUI
 local gui = UI:CreateMainGui("S3IKY HACK V3", Settings.mainColor)
 
--- Lista de módulos para carregar
-local moduleNames = {
-    "fly"
-    -- Adicione mais módulos aqui: "speed", "infinitejump", "aimbot", "esp", "stick", "teleport"
-}
+-- =============================================
+-- CRIAR AS PÁGINAS MANUALMENTE (SOLUÇÃO TEMPORÁRIA)
+-- =============================================
 
--- Carregar módulos
-for _, name in ipairs(moduleNames) do
-    local module = loadModule("modules/" .. name .. ".lua")
-    if module and module.Init then
-        module:Init(gui, Settings, Elements)
-        print("✅ Módulo carregado: " .. name)
-    end
+-- Página Movimento
+local movePage = UI:AddPage(gui, "Movimento", "Movimento")
+local moveContainer = Elements:CreateContainer(movePage, 400)
+
+-- Botão Fly (teste)
+Elements:CreateToggle(moveContainer, "Fly Teste", false, function(state)
+    print("Fly:", state)
+end, Settings.mainColor)
+
+-- Página Aimbot
+local aimPage = UI:AddPage(gui, "Aimbot", "Aimbot")
+local aimContainer = Elements:CreateContainer(aimPage, 200)
+Elements:CreateToggle(aimContainer, "Aimbot", false, function(state)
+    print("Aimbot:", state)
+end, Settings.mainColor)
+
+-- Página Visuais
+local visPage = UI:AddPage(gui, "Visuais", "Visuais")
+local visContainer = Elements:CreateContainer(visPage, 200)
+Elements:CreateToggle(visContainer, "ESP", false, function(state)
+    print("ESP:", state)
+end, Settings.mainColor)
+
+-- Página Teleport
+local telePage = UI:AddPage(gui, "Teleport", "Teleport")
+local teleContainer = Elements:CreateContainer(telePage, 200)
+Elements:CreateToggle(teleContainer, "Teleport", false, function(state)
+    print("Teleport:", state)
+end, Settings.mainColor)
+
+-- Página Grudar
+local stickPage = UI:AddPage(gui, "Grudar", "Grudar")
+local stickContainer = Elements:CreateContainer(stickPage, 200)
+Elements:CreateToggle(stickContainer, "Grudar", false, function(state)
+    print("Grudar:", state)
+end, Settings.mainColor)
+
+-- Página Lugares
+local placesPage = UI:AddPage(gui, "Lugares", "Lugares")
+local placesContainer = Elements:CreateContainer(placesPage, 400)
+
+-- Criar botões para cada lugar
+for name, data in pairs(Places) do
+    Elements:CreateToggle(placesContainer, name, false, function(state)
+        print("Ir para:", name)
+    end, data.color or Settings.mainColor)
 end
 
--- Configurar navegação entre páginas
+-- Configurar navegação
 UI:SetupNavigation(gui)
 
 -- Finalizar
 Init:Finish(gui)
 
 print("🎯 S3IKY HACK pronto! Pressione CTRL para abrir")
+print("✅ Páginas criadas:", #gui.pages)
