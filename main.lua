@@ -1,26 +1,28 @@
--- Dentro do loop de criação de páginas no main.lua:
+local UI = loadstring(game:HttpGet("Sua_URL_Para_UI.lua"))()
+local Elements = loadstring(game:HttpGet("Sua_URL_Para_Elements.lua"))()
 
-elseif pageName == "Aimbot" then
-    -- Criamos um layout de grade ou horizontal para as duas colunas
-    local columnContainer = Instance.new("Frame")
-    columnContainer.Size = UDim2.new(1, 0, 1, 0)
-    columnContainer.BackgroundTransparency = 1
-    columnContainer.Parent = page
+local Main = UI:CreateMainGui("Malignant")
 
-    local layout = Instance.new("UIListLayout")
-    layout.FillDirection = Enum.FillDirection.Horizontal
-    layout.Padding = UDim.new(0, 10)
-    layout.Parent = columnContainer
+-- Página de Combate
+local CombatPage = UI:AddPage(Main, "Combat")
+local AimbotSection = Elements:CreateSection(CombatPage, "Aimbot Settings")
+local AutoClickSection = Elements:CreateSection(CombatPage, "Autoclicker")
 
-    -- COLUNA 1: Aimbot Settings
-    local col1 = Elements:CreateContainer(columnContainer, "Aimbot Settings", 350)
-    Elements:CreateToggle(col1, "Aim nearest (world)", false, function(s) end, purpleColor)
-    Elements:CreateSlider(col1, "Aim radius (world)", 0, 10, 3.0, function(v) end)
-    Elements:CreateSlider(col1, "Aim speed", 0, 1, 0.60, function(v) end)
-    Elements:CreateSlider(col1, "Aim FOV (px)", 0, 1000, 300, function(v) end)
+Elements:CreateToggle(AimbotSection, "Enable Aimbot", false, function(v)
+    print("Aimbot:", v)
+end)
 
-    -- COLUNA 2: Autoclicker
-    local col2 = Elements:CreateContainer(columnContainer, "Autoclicker", 350)
-    Elements:CreateToggle(col2, "Autoclicker Enabled", false, function(s) end, purpleColor)
-    Elements:CreateSlider(col2, "CPS", 1, 20, 10, function(v) end)
-    Elements:CreateToggle(col2, "Right clicker", false, function(s) end, purpleColor)
+Elements:CreateSlider(AimbotSection, "Smoothness", 1, 20, 5, function(v)
+    print("Smooth:", v)
+end)
+
+Elements:CreateToggle(AutoClickSection, "Enable Autoclick", false, function(v)
+    print("Autoclick:", v)
+end)
+
+-- Ativar primeira página por padrão
+Main.buttons["Combat"].Button.TextColor3 = Color3.fromRGB(0, 200, 0)
+Main.buttons["Combat"].Indicator.Visible = true
+Main.pages["Combat"].Visible = true
+
+print("Malignant carregado com sucesso!")
