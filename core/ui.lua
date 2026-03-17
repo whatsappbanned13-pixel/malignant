@@ -1,8 +1,9 @@
--- Core/UI.lua
+-- core/ui.lua
 local UI = {}
 
 local player = game:GetService("Players").LocalPlayer
 local tweenService = game:GetService("TweenService")
+local userInputService = game:GetService("UserInputService")
 
 function UI:CreateMainGui(title, color)
     local screenGui = Instance.new("ScreenGui")
@@ -30,10 +31,17 @@ function UI:CreateMainGui(title, color)
     corner.CornerRadius = UDim.new(0, 8)
     corner.Parent = mainFrame
     
+    -- Sombra
     self:CreateShadow(mainFrame)
+    
+    -- Barra de título
     self:CreateTitleBar(mainFrame, title, color)
-    self:CreateSideMenu(mainFrame)
-    self:CreateContentArea(mainFrame)
+    
+    -- Menu lateral
+    local sideMenu = self:CreateSideMenu(mainFrame)
+    
+    -- Área de conteúdo
+    local contentArea, contentContainer = self:CreateContentArea(mainFrame)
     
     -- Tornar arrastável
     self:MakeDraggable(mainFrame)
@@ -41,8 +49,8 @@ function UI:CreateMainGui(title, color)
     return {
         screenGui = screenGui,
         mainFrame = mainFrame,
-        sideMenu = mainFrame:FindFirstChild("SideMenu"),
-        contentContainer = mainFrame:FindFirstChild("ContentArea"):FindFirstChild("ContentContainer"),
+        sideMenu = sideMenu,
+        contentContainer = contentContainer,
         pages = {},
         buttons = {}
     }
@@ -104,7 +112,7 @@ function UI:CreateTitleBar(parent, title, color)
     closeCorner.Parent = closeButton
     
     closeButton.MouseButton1Click:Connect(function()
-        parent.Parent:Destroy()
+        screenGui:Destroy()
     end)
     
     return titleBar
@@ -158,7 +166,7 @@ function UI:CreateContentArea(parent)
     container.ZIndex = 4
     container.Parent = contentArea
     
-    return container
+    return contentArea, container
 end
 
 function UI:MakeDraggable(frame)
@@ -189,7 +197,7 @@ function UI:MakeDraggable(frame)
         end
     end)
     
-    game:GetService("UserInputService").InputChanged:Connect(function(input)
+    userInputService.InputChanged:Connect(function(input)
         if input == dragInput and dragging then
             local delta = input.Position - dragStart
             frame.Position = UDim2.new(
@@ -255,17 +263,14 @@ end
 function UI:SetupNavigation(gui)
     for name, data in pairs(gui.buttons) do
         data.button.MouseButton1Click:Connect(function()
-            -- Resetar todos os botões
             for _, btnData in pairs(gui.buttons) do
                 btnData.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
                 btnData.line.Visible = false
             end
             
-            -- Ativar botão clicado
             data.button.BackgroundColor3 = Color3.fromRGB(28, 28, 28)
             data.line.Visible = true
             
-            -- Mostrar página correspondente
             for pageName, page in pairs(gui.pages) do
                 page.Visible = (pageName == name)
             end
