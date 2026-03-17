@@ -1,4 +1,4 @@
--- core/ui.lua - VERSÃO FINAL (Sem topbar, nome no lateral)
+-- core/ui.lua - VERSÃO ULTRA FINAL
 local UI = {}
 
 local player = game:GetService("Players").LocalPlayer
@@ -12,7 +12,7 @@ function UI:CreateMainGui(title, color)
     screenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
     screenGui.DisplayOrder = 999999
     
-    -- Frame principal (SEM TOPBAR)
+    -- Frame principal
     local mainFrame = Instance.new("Frame")
     mainFrame.Name = "MainFrame"
     mainFrame.Size = UDim2.new(0, 900, 0, 500)
@@ -27,13 +27,22 @@ function UI:CreateMainGui(title, color)
     mainFrame.ZIndex = 2
     mainFrame.Parent = screenGui
     
-    -- Menu lateral (agora com nome e sem scroll)
+    -- Menu lateral (com nome centralizado)
     local sideMenu = self:CreateSideMenu(mainFrame, title)
     
     -- Área de conteúdo
     local contentArea, contentContainer = self:CreateContentArea(mainFrame)
     
-    -- Tornar arrastável (pelo menu lateral)
+    -- LINHA DIVISÓRIA VERTICAL (do topo ao fim)
+    local divider = Instance.new("Frame")
+    divider.Size = UDim2.new(0, 1, 1, 0)
+    divider.Position = UDim2.new(0, 220, 0, 0)  -- Começa onde termina o menu
+    divider.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    divider.BorderSizePixel = 0
+    divider.ZIndex = 5
+    divider.Parent = mainFrame
+    
+    -- Tornar arrastável
     self:MakeDraggable(mainFrame, sideMenu)
     
     return {
@@ -49,37 +58,36 @@ end
 function UI:CreateSideMenu(parent, title)
     local sideMenu = Instance.new("Frame")
     sideMenu.Name = "SideMenu"
-    sideMenu.Size = UDim2.new(0, 220, 1, 0)  -- Ocupa altura total
-    sideMenu.BackgroundColor3 = Color3.fromRGB(18, 18, 18)
+    sideMenu.Size = UDim2.new(0, 220, 1, 0)
+    sideMenu.BackgroundColor3 = Color3.fromRGB(22, 22, 22)  -- MESMA COR DO FUNDO
     sideMenu.BackgroundTransparency = 0
     sideMenu.BorderSizePixel = 0
     sideMenu.ZIndex = 3
     sideMenu.Parent = parent
     
-    -- TÍTULO DO HACK NO MENU LATERAL
+    -- TÍTULO DO HACK NO MENU LATERAL (BRANCO, CENTRALIZADO)
     local titleLabel = Instance.new("TextLabel")
     titleLabel.Name = "MenuTitle"
-    titleLabel.Size = UDim2.new(1, 0, 0, 50)
-    titleLabel.BackgroundColor3 = Color3.fromRGB(10, 10, 10)
-    titleLabel.BackgroundTransparency = 0
+    titleLabel.Size = UDim2.new(1, 0, 0, 60)
+    titleLabel.BackgroundTransparency = 1
     titleLabel.Text = "malignant"
-    titleLabel.TextColor3 = Color3.fromRGB(0, 255, 0)  -- Verde
+    titleLabel.TextColor3 = Color3.fromRGB(255, 255, 255)  -- BRANCO
     titleLabel.TextScaled = true
-    titleLabel.Font = Enum.Font.GothamBlack  -- Mais próximo de Becky
+    titleLabel.Font = Enum.Font.GothamBlack
     titleLabel.ZIndex = 5
     titleLabel.Parent = sideMenu
     
-    -- Container de botões (SEM SCROLL - tamanho fixo)
+    -- Container de botões
     local buttonContainer = Instance.new("Frame")
     buttonContainer.Name = "ButtonContainer"
-    buttonContainer.Size = UDim2.new(1, 0, 1, -50)
-    buttonContainer.Position = UDim2.new(0, 0, 0, 50)
+    buttonContainer.Size = UDim2.new(1, 0, 1, -60)
+    buttonContainer.Position = UDim2.new(0, 0, 0, 60)
     buttonContainer.BackgroundTransparency = 1
     buttonContainer.Parent = sideMenu
     
-    -- Layout dos botões (SEM SCROLL)
+    -- Layout dos botões
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 2)
+    layout.Padding = UDim.new(0, 0)  -- SEM ESPAÇO, ENCOSTADOS
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = buttonContainer
@@ -97,6 +105,21 @@ function UI:CreateContentArea(parent)
     contentArea.BorderSizePixel = 0
     contentArea.ZIndex = 3
     contentArea.Parent = parent
+    
+    -- TÍTULO DA PÁGINA ATUAL (opcional)
+    local pageTitle = Instance.new("TextLabel")
+    pageTitle.Name = "PageTitle"
+    pageTitle.Size = UDim2.new(1, -20, 0, 40)
+    pageTitle.Position = UDim2.new(0, 10, 0, 10)
+    pageTitle.BackgroundTransparency = 1
+    pageTitle.Text = ""
+    pageTitle.TextColor3 = Color3.fromRGB(255, 255, 255)
+    pageTitle.TextScaled = true
+    pageTitle.Font = Enum.Font.GothamBold
+    pageTitle.TextXAlignment = Enum.TextXAlignment.Left
+    pageTitle.Visible = false
+    pageTitle.ZIndex = 5
+    pageTitle.Parent = contentArea
     
     local container = Instance.new("Frame")
     container.Name = "ContentContainer"
@@ -123,17 +146,27 @@ function UI:AddPage(gui, name, buttonText)
     page.ZIndex = 5
     page.Parent = gui.contentContainer
     
+    -- Layout da página
     local layout = Instance.new("UIListLayout")
-    layout.Padding = UDim.new(0, 10)
+    layout.Padding = UDim.new(0, 15)
     layout.HorizontalAlignment = Enum.HorizontalAlignment.Center
     layout.SortOrder = Enum.SortOrder.LayoutOrder
     layout.Parent = page
     
-    -- Botão do menu (no container sem scroll)
+    -- LINHA DE CONTORNO DA CATEGORIA (no topo da página)
+    local categoryLine = Instance.new("Frame")
+    categoryLine.Size = UDim2.new(1, -20, 0, 2)
+    categoryLine.Position = UDim2.new(0, 10, 0, 0)
+    categoryLine.BackgroundColor3 = Color3.fromRGB(60, 60, 60)
+    categoryLine.BorderSizePixel = 0
+    categoryLine.ZIndex = 6
+    categoryLine.Parent = page
+    
+    -- Botão do menu (LATERAL - ENCOSTADO 100%)
     local button = Instance.new("TextButton")
     button.Name = name .. "Button"
-    button.Size = UDim2.new(1, -10, 0, 42)
-    button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
+    button.Size = UDim2.new(1, 0, 0, 45)  -- Largura TOTAL, encostado
+    button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)  -- MESMA COR DO FUNDO
     button.BackgroundTransparency = 0
     button.Text = "  " .. buttonText
     button.TextColor3 = Color3.fromRGB(180, 180, 180)
@@ -144,31 +177,32 @@ function UI:AddPage(gui, name, buttonText)
     button.ZIndex = 5
     button.Parent = gui.sideMenu:FindFirstChild("ButtonContainer")
     
-    -- Linha indicadora
+    -- GRADIENTE DE SELEÇÃO (COM OPACIDADE)
+    local selectionGradient = Instance.new("UIGradient")
+    selectionGradient.Color = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
+        ColorSequenceKeypoint.new(0.3, Color3.fromRGB(0, 200, 0)),
+        ColorSequenceKeypoint.new(0.7, Color3.fromRGB(0, 150, 0)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(22, 22, 22))
+    })
+    selectionGradient.Rotation = 90
+    selectionGradient.Transparency = NumberSequence.new(0.5)  -- 50% de opacidade
+    selectionGradient.Visible = false
+    selectionGradient.Parent = button
+    
+    -- LINHA INDICADORA VERDE (sem opacidade)
     local line = Instance.new("Frame")
-    line.Size = UDim2.new(0, 4, 1, -10)
-    line.Position = UDim2.new(0, 0, 0, 5)
+    line.Size = UDim2.new(0, 4, 1, 0)
     line.BackgroundColor3 = Color3.fromRGB(0, 255, 0)
     line.BackgroundTransparency = 0
     line.Visible = false
-    line.ZIndex = 6
+    line.ZIndex = 7
     line.Parent = button
-    
-    -- Gradiente
-    local gradient = Instance.new("UIGradient")
-    gradient.Color = ColorSequence.new({
-        ColorSequenceKeypoint.new(0, Color3.fromRGB(0, 255, 0)),
-        ColorSequenceKeypoint.new(0.7, Color3.fromRGB(0, 100, 0)),
-        ColorSequenceKeypoint.new(1, Color3.fromRGB(22, 22, 22))
-    })
-    gradient.Rotation = 90
-    gradient.Visible = false
-    gradient.Parent = button
     
     -- Evento de clique
     button.MouseButton1Click:Connect(function()
+        -- Resetar todos os botões
         for _, btnData in pairs(gui.buttons) do
-            btnData.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
             btnData.button.TextColor3 = Color3.fromRGB(180, 180, 180)
             btnData.line.Visible = false
             if btnData.gradient then
@@ -176,11 +210,12 @@ function UI:AddPage(gui, name, buttonText)
             end
         end
         
-        button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
-        button.TextColor3 = Color3.fromRGB(0, 255, 0)
+        -- Ativar este botão
+        button.TextColor3 = Color3.fromRGB(0, 255, 0)  -- Texto verde quando selecionado
         line.Visible = true
-        gradient.Visible = true
+        selectionGradient.Visible = true  -- Gradiente com opacidade aparece
         
+        -- Mostrar página correspondente
         for pageName, page in pairs(gui.pages) do
             page.Visible = (pageName == name)
         end
@@ -190,7 +225,7 @@ function UI:AddPage(gui, name, buttonText)
     gui.buttons[name] = {
         button = button,
         line = line,
-        gradient = gradient
+        gradient = selectionGradient
     }
     
     return page
@@ -201,7 +236,6 @@ function UI:SetupNavigation(gui)
     local firstName = next(gui.buttons)
     if firstName then
         local firstData = gui.buttons[firstName]
-        firstData.button.BackgroundColor3 = Color3.fromRGB(22, 22, 22)
         firstData.button.TextColor3 = Color3.fromRGB(0, 255, 0)
         firstData.line.Visible = true
         if firstData.gradient then
@@ -216,7 +250,6 @@ function UI:MakeDraggable(frame, sideMenu)
     local dragStart
     local startPos
     
-    -- Usar o menu lateral para arrastar
     sideMenu.InputBegan:Connect(function(input)
         if input.UserInputType == Enum.UserInputType.MouseButton1 then
             dragging = true
