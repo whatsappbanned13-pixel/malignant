@@ -1,28 +1,33 @@
-local UI = loadstring(game:HttpGet("Sua_URL_Para_UI.lua"))()
-local Elements = loadstring(game:HttpGet("Sua_URL_Para_Elements.lua"))()
+-- Função para carregar com segurança
+local function SafeLoad(url)
+    local success, result = pcall(function()
+        return loadstring(game:HttpGet(url))()
+    end)
+    if success then return result end
+    warn("Falha ao carregar: " .. url)
+    return nil
+end
 
-local Main = UI:CreateMainGui("Malignant")
+-- IMPORTANTE: Coloque seus links RAW aqui
+local UI = SafeLoad("LINK_DO_SEU_UI_LUA")
+local Elements = SafeLoad("LINK_DO_SEU_ELEMENTS_LUA")
 
--- Página de Combate
-local CombatPage = UI:AddPage(Main, "Combat")
-local AimbotSection = Elements:CreateSection(CombatPage, "Aimbot Settings")
-local AutoClickSection = Elements:CreateSection(CombatPage, "Autoclicker")
+if UI and Elements then
+    local App = UI:CreateMainGui("Malignant")
+    
+    -- Exemplo: Página Combat
+    local CombatPage = UI:AddPage(App, "Combat")
+    
+    local AimbotCol = Elements:NewSection(CombatPage, "Aimbot Settings")
+    Elements:NewToggle(AimbotCol, "Enabled", function(v) print("Aimbot:", v) end)
+    Elements:NewToggle(AimbotCol, "Aim Nearest", function(v) end)
 
-Elements:CreateToggle(AimbotSection, "Enable Aimbot", false, function(v)
-    print("Aimbot:", v)
-end)
-
-Elements:CreateSlider(AimbotSection, "Smoothness", 1, 20, 5, function(v)
-    print("Smooth:", v)
-end)
-
-Elements:CreateToggle(AutoClickSection, "Enable Autoclick", false, function(v)
-    print("Autoclick:", v)
-end)
-
--- Ativar primeira página por padrão
-Main.buttons["Combat"].Button.TextColor3 = Color3.fromRGB(0, 200, 0)
-Main.buttons["Combat"].Indicator.Visible = true
-Main.pages["Combat"].Visible = true
-
-print("Malignant carregado com sucesso!")
+    local ClickCol = Elements:NewSection(CombatPage, "Autoclicker")
+    Elements:NewToggle(ClickCol, "Active", function(v) end)
+    
+    -- Ativar padrão
+    App.pages["Combat"].Visible = true
+    App.buttons["Combat"].TextColor3 = Color3.fromRGB(0, 255, 70)
+else
+    print("Erro crítico: Módulos não encontrados.")
+end
